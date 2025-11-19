@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina | Visual Stories</title>
+    <title>Chaoyue's Studio | Visual Stories</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,11 +20,6 @@
         
         h1, h2, h3, .serif-font {
             font-family: 'Playfair Display', serif;
-        }
-
-        .gallery-item {
-            break-inside: avoid;
-            margin-bottom: 1.5rem;
         }
 
         /* Hide scrollbar */
@@ -71,7 +66,7 @@
     <nav class="fixed w-full z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
-                <a href="#" class="text-2xl font-semibold tracking-wide text-gray-900 serif-font">LUMINA.</a>
+                <a href="#" class="text-2xl font-semibold tracking-wide text-gray-900 serif-font">CHAOYUE.</a>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
@@ -114,7 +109,7 @@
 
         <div class="absolute inset-0 flex items-center justify-center md:justify-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-none">
             <div class="max-w-xl pointer-events-auto bg-white/60 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-8 rounded-2xl md:p-0 fade-in">
-                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Photography Portfolio</span>
+                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Chaoyue's Photo Studio</span>
                 <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight serif-font">
                     Life in <br/>
                     <span class="italic font-light text-orange-500">Vibrant Color</span>
@@ -149,10 +144,10 @@
             <button onclick="filterGallery('people')" class="filter-btn text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-200 text-gray-500 hover:border-orange-500 hover:text-orange-500 transition-all hover:shadow-md">People</button>
         </div>
 
-        <!-- Gallery Grid -->
-        <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6" id="gallery-grid">
-            <!-- Scanning animation (will be removed if items found) -->
-            <div class="col-span-3 text-center py-20" id="scanning-msg">
+        <!-- Gallery Grid - CHANGED: Used Grid instead of Columns for uniform sizes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
+            <!-- Scanning animation -->
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20" id="scanning-msg">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-4"></div>
                 <p class="text-gray-500 font-medium">Scanning local folders for images...</p>
             </div>
@@ -259,7 +254,7 @@
     <footer class="border-t border-gray-100 py-12 bg-[#faf9f6]">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <span class="text-xl font-bold text-gray-900 serif-font">LUMINA.</span>
+                <span class="text-xl font-bold text-gray-900 serif-font">CHAOYUE.</span>
                 <p class="text-xs text-gray-500 mt-2">Capturing moments, one click at a time.</p>
             </div>
             
@@ -268,7 +263,7 @@
                 <a href="#" class="text-gray-400 hover:text-orange-500 transition-colors"><i data-lucide="twitter"></i></a>
                 <a href="#" class="text-gray-400 hover:text-orange-500 transition-colors"><i data-lucide="mail"></i></a>
             </div>
-            <p class="text-xs text-gray-400 uppercase tracking-widest">© 2024 Lumina Studio</p>
+            <p class="text-xs text-gray-400 uppercase tracking-widest">© 2024 Chaoyue's Photo Studio</p>
         </div>
     </footer>
 
@@ -304,8 +299,11 @@
             localPath: 'images', 
             categories: ['food', 'view', 'people'], // Folders to scan
             
-            // Optional: Custom titles/descriptions
-            // Key format: 'folder/number' -> 'food/1'
+            // How many images to try loading simultaneously per category?
+            // Higher = faster load, but higher risk of console 404 errors.
+            batchSize: 10,
+
+            // Optional: Custom metadata
             metadata: {
                 'food/1': { title: "Signature Dish", desc: "Chef's Table" },
                 'view/1': { title: "Mountain Peak", desc: "Hiking Adventure" }
@@ -320,8 +318,8 @@
         // State
         let portfolioItems = [];
         let currentFilter = 'all';
-        let categoriesScanning = 0;
         let totalFound = 0;
+        let scannedCategories = 0;
 
         // DOM Elements
         const galleryGrid = document.getElementById('gallery-grid');
@@ -329,72 +327,126 @@
         const setupError = document.getElementById('setup-error');
 
         function initGallery() {
-            // Start scanning all categories
+            // Start scanning all categories in parallel batches
             galleryConfig.categories.forEach(category => {
-                categoriesScanning++;
-                probeImage(category, 1);
+                // We start by checking batch 1 (images 1 to 10)
+                loadBatch(category, 1);
             });
         }
 
-        // The Probe: Recursively checks for 1.jpg, 2.jpg, etc.
-        function probeImage(category, index) {
-            const img = new Image();
-            const src = `${galleryConfig.localPath}/${category}/${index}.jpg`;
-            const metaKey = `${category}/${index}`;
+        // Loads a batch of images (e.g., 1-10) simultaneously
+        function loadBatch(category, startIdx) {
+            let successInBatch = 0;
+            let completedInBatch = 0;
+            const endIdx = startIdx + galleryConfig.batchSize - 1;
+            
+            for (let i = startIdx; i <= endIdx; i++) {
+                const img = new Image();
+                const src = `${galleryConfig.localPath}/${category}/${i}.jpg`;
+                const metaKey = `${category}/${i}`;
 
-            img.onload = function() {
-                // SUCCESS: Image found
-                totalFound++;
-                
-                // Hide scanning message if it's still there
-                if (scanningMsg) scanningMsg.style.display = 'none';
+                img.onload = function() {
+                    // SUCCESS
+                    successInBatch++;
+                    completedInBatch++;
+                    totalFound++;
 
-                const meta = galleryConfig.metadata[metaKey] || {};
-                const defaults = galleryConfig.defaults[category];
-                
-                const newItem = {
-                    id: `${category}-${index}`,
-                    category: category,
-                    title: meta.title || `${defaults.title} ${index}`,
-                    desc: meta.desc || defaults.desc,
-                    src: src,
-                    largeSrc: src
+                    if (scanningMsg) scanningMsg.style.display = 'none';
+
+                    const meta = galleryConfig.metadata[metaKey] || {};
+                    const defaults = galleryConfig.defaults[category];
+                    
+                    const newItem = {
+                        id: `${category}-${i}`,
+                        category: category,
+                        sortIndex: i, // Keep track of number for sorting
+                        title: meta.title || `${defaults.title} ${i}`,
+                        desc: meta.desc || defaults.desc,
+                        src: src,
+                        largeSrc: src
+                    };
+
+                    portfolioItems.push(newItem);
+                    
+                    // Sort items so 1, 2, 3 appear in order even if 3 loads before 1
+                    portfolioItems.sort((a, b) => {
+                         // simple sort by category then index
+                         if(a.category === b.category) return a.sortIndex - b.sortIndex;
+                         return a.category.localeCompare(b.category);
+                    });
+
+                    // Re-render grid completely to maintain order
+                    renderGallery();
+                    
+                    // If this was the last item in the batch, and it succeeded,
+                    // we might want to trigger the NEXT batch?
+                    // Actually, simpler: wait for all in batch to finish/fail.
+                    checkBatchCompletion();
                 };
 
-                portfolioItems.push(newItem);
+                img.onerror = function() {
+                    // FAILURE
+                    completedInBatch++;
+                    checkBatchCompletion();
+                };
                 
-                // Render immediately if filter matches
-                if (currentFilter === 'all' || currentFilter === category) {
-                    appendItemToGrid(newItem);
+                img.src = src;
+            }
+
+            function checkBatchCompletion() {
+                // If we have processed all images in this batch
+                if (completedInBatch === galleryConfig.batchSize) {
+                    // If we found ANY images in this batch (e.g. found 1,2,3 but failed 4-10)
+                    // and specifically if we found the LAST one, we should probably check the next batch.
+                    // BUT, strictly, if 1-10 exists, we load 11-20.
+                    // If only 1-3 exist, successInBatch will be > 0 but < 10.
+                    // We stop if successInBatch == 0 (found nothing in this range).
+                    
+                    if (successInBatch > 0) {
+                        // Found some! Let's aggressively try the next batch
+                        loadBatch(category, endIdx + 1);
+                    } else {
+                        // Found nothing in this batch. Stop scanning this category.
+                        scannedCategories++;
+                        checkAllDone();
+                    }
                 }
+            }
+        }
+        
+        function checkAllDone() {
+            // If we checked all categories and found zero images total
+            if (scannedCategories === galleryConfig.categories.length && totalFound === 0) {
+                if (scanningMsg) scanningMsg.style.display = 'none';
+                setupError.classList.remove('hidden');
+            }
+        }
 
-                // Continue looking for next number
-                probeImage(category, index + 1);
-            };
+        function renderGallery() {
+            // Helper to render the current state of portfolioItems
+            galleryGrid.innerHTML = '';
+            
+            const filteredItems = currentFilter === 'all' 
+                ? portfolioItems 
+                : portfolioItems.filter(item => item.category === currentFilter);
+            
+            filteredItems.forEach(item => appendItemToGrid(item));
 
-            img.onerror = function() {
-                // FAILURE: Image not found (End of this category)
-                categoriesScanning--;
-                
-                // If all categories are done and we found nothing...
-                if (categoriesScanning === 0 && totalFound === 0) {
-                    if (scanningMsg) scanningMsg.style.display = 'none';
-                    setupError.classList.remove('hidden'); // Show error UI
-                }
-            };
-
-            img.src = src;
+            if (filteredItems.length === 0 && totalFound > 0) {
+                 // Keep the grid empty but maybe show a message if desired
+            }
         }
 
         function appendItemToGrid(item) {
             const div = document.createElement('div');
-            div.className = `group relative break-inside-avoid mb-6 rounded-lg overflow-hidden bg-gray-100 hover-lift fade-in`;
+            // CHANGED: Added 'aspect-square' for uniform size
+            div.className = `group relative aspect-square overflow-hidden bg-gray-100 hover-lift fade-in`;
             
             div.innerHTML = `
                 <div class="img-loading absolute inset-0 w-full h-full"></div>
                 <img src="${item.src}" 
                      onload="this.previousElementSibling.style.display='none'"
-                     class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
+                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                      alt="${item.title}">
                 <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <h3 class="translate-y-4 text-xl font-semibold text-white transition-transform duration-300 group-hover:translate-y-0 serif-font text-center px-4">${item.title}</h3>
@@ -411,7 +463,6 @@
         function filterGallery(category) {
             currentFilter = category;
             
-            // Update UI buttons
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => {
                 const btnCategory = btn.getAttribute('onclick').split("'")[1];
@@ -424,21 +475,10 @@
                 }
             });
 
-            // Re-render grid
-            galleryGrid.innerHTML = '';
-            const filteredItems = currentFilter === 'all' 
-                ? portfolioItems 
-                : portfolioItems.filter(item => item.category === currentFilter);
-            
-            filteredItems.forEach(item => appendItemToGrid(item));
-            
-            // If filter yields no results (but we have global items)
-            if (filteredItems.length === 0 && totalFound > 0) {
-                galleryGrid.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-12">No images found in this category yet.</div>`;
-            }
+            renderGallery();
         }
 
-        // Lightbox & Contact (Standard)
+        // Lightbox & Contact
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxTitle = document.getElementById('lightbox-title');
@@ -492,4 +532,4 @@
 
     </script>
 </body>
-</html>
+</html> 
