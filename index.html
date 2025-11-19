@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina | Visual Stories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+        }
+        
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Hide scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loader for images */
+        .img-loading {
+            background-color: #f3f4f6;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-orange-100 selection:text-orange-900">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <a href="#" class="text-2xl font-semibold tracking-wide text-gray-900 serif-font">LUMINA.</a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#home" class="text-xs font-medium uppercase tracking-widest hover:text-orange-500 text-gray-600 transition-colors">Home</a>
+                    <a href="#portfolio" class="text-xs font-medium uppercase tracking-widest hover:text-orange-500 text-gray-600 transition-colors">Portfolio</a>
+                    <a href="#about" class="text-xs font-medium uppercase tracking-widest hover:text-orange-500 text-gray-600 transition-colors">About</a>
+                    <a href="#contact" class="px-6 py-2.5 bg-gray-900 text-white text-xs font-medium uppercase tracking-widest hover:bg-orange-500 transition-all duration-300 rounded-full">Let's Talk</a>
+                </div>
+
+                <!-- Mobile Button -->
+                <button class="md:hidden text-gray-900" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 absolute w-full shadow-lg">
+            <div class="px-4 pt-2 pb-6 space-y-2 flex flex-col items-center">
+                <a href="#home" class="block py-3 text-gray-600 hover:text-orange-500 uppercase tracking-widest text-sm" onclick="toggleMobileMenu()">Home</a>
+                <a href="#portfolio" class="block py-3 text-gray-600 hover:text-orange-500 uppercase tracking-widest text-sm" onclick="toggleMobileMenu()">Portfolio</a>
+                <a href="#about" class="block py-3 text-gray-600 hover:text-orange-500 uppercase tracking-widest text-sm" onclick="toggleMobileMenu()">About</a>
+                <a href="#contact" class="block py-3 text-gray-600 hover:text-orange-500 uppercase tracking-widest text-sm" onclick="toggleMobileMenu()">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#f9f9f9]">
+        <!-- Split Background -->
+        <div class="absolute inset-0 grid grid-cols-1 md:grid-cols-2 w-full h-full">
+            <div class="bg-[#f8f5f2] h-full w-full hidden md:block"></div>
+            <div class="h-full w-full relative">
+                 <!-- Bright, appealing hero image -->
+                <img src="https://images.unsplash.com/photo-1464550883968-1564ee8fe98e?q=80&w=2574&auto=format&fit=crop" 
+                     class="w-full h-full object-cover opacity-90" alt="Bright Lifestyle">
+                <div class="absolute inset-0 bg-white/10"></div>
+            </div>
+        </div>
+
+        <!-- Content Overlay -->
+        <div class="absolute inset-0 flex items-center justify-center md:justify-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-none">
+            <div class="max-w-xl pointer-events-auto bg-white/60 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-8 rounded-2xl md:p-0 fade-in">
+                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Photography Portfolio</span>
+                <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight serif-font">
+                    Life in <br/>
+                    <span class="italic font-light text-orange-500">Vibrant Color</span>
+                </h1>
+                <p class="text-gray-600 text-lg mb-8 leading-relaxed max-w-md">
+                    Capturing the delicious, the scenic, and the human moments that make life beautiful.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#portfolio" class="px-8 py-3 bg-gray-900 text-white text-sm font-bold uppercase tracking-widest hover:bg-orange-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-xl">
+                        View Gallery
+                    </a>
+                    <a href="#contact" class="px-8 py-3 bg-white border border-gray-200 text-gray-900 text-sm font-bold uppercase tracking-widest hover:border-orange-500 hover:text-orange-500 transition-all duration-300 rounded-full">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="text-4xl md:text-5xl text-gray-900 mb-4 serif-font">Curated Collections</h2>
+            <p class="text-gray-500">Explore recent shoots across food, landscapes, and portraits.</p>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+            <button onclick="filterGallery('all')" class="filter-btn active text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-900 bg-gray-900 text-white transition-all hover:shadow-md">All</button>
+            <button onclick="filterGallery('food')" class="filter-btn text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-200 text-gray-500 hover:border-orange-500 hover:text-orange-500 transition-all hover:shadow-md">Food</button>
+            <button onclick="filterGallery('view')" class="filter-btn text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-200 text-gray-500 hover:border-orange-500 hover:text-orange-500 transition-all hover:shadow-md">View</button>
+            <button onclick="filterGallery('people')" class="filter-btn text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-200 text-gray-500 hover:border-orange-500 hover:text-orange-500 transition-all hover:shadow-md">People</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6" id="gallery-grid">
+            <!-- Items will be injected via JS -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-[#faf9f6]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative order-2 lg:order-1">
+                    <!-- Decorative square -->
+                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-100 rounded-full z-0"></div>
+                    <div class="absolute -top-6 -right-6 w-24 h-24 border-2 border-gray-200 rounded-full z-0"></div>
+                    
+                    <img src="https://images.unsplash.com/photo-1552699616-9679c615b46d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                         alt="Photographer" class="relative z-10 w-full h-[500px] object-cover rounded-2xl shadow-xl">
+                </div>
+                <div class="order-1 lg:order-2">
+                    <span class="text-orange-500 font-bold uppercase tracking-widest text-xs mb-2 block">About Me</span>
+                    <h2 class="text-4xl md:text-5xl text-gray-900 mb-8 serif-font">Chasing Light & Flavor</h2>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                        Hi, I'm the eye behind the lens. My journey started with a simple love for morning light hitting a cup of coffee. Since then, it's evolved into a passion for capturing the essence of what makes life enjoyable.
+                    </p>
+                    <p class="text-gray-600 text-lg leading-relaxed mb-8">
+                        Whether I'm styling a rustic dinner scene, hiking to a summit for that perfect view, or working with people to bring out their genuine smiles, I aim for a style that is bright, authentic, and timeless.
+                    </p>
+                    
+                    <div class="flex gap-8 pt-4">
+                        <div>
+                            <h4 class="text-3xl font-bold text-gray-900 serif-font">50+</h4>
+                            <span class="text-xs text-gray-500 uppercase tracking-wider">Happy Clients</span>
+                        </div>
+                        <div>
+                            <h4 class="text-3xl font-bold text-gray-900 serif-font">120+</h4>
+                            <span class="text-xs text-gray-500 uppercase tracking-wider">Shoots</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-24 bg-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl md:text-5xl text-gray-900 mb-6 serif-font">Ready for a Shoot?</h2>
+            <p class="text-gray-500 mb-12 text-lg">Tell me about your vision. I'm available for freelance projects.</p>
+            
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100">
+                <form onsubmit="handleContact(event)" class="space-y-6 text-left">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase tracking-widest text-gray-500">Name</label>
+                            <input type="text" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
+                            <input type="email" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-gray-500">What are we shooting?</label>
+                        <select class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
+                            <option>Food Photography</option>
+                            <option>Portrait / Personal Branding</option>
+                            <option>Landscape / Location</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold uppercase tracking-widest text-gray-500">Message</label>
+                        <textarea rows="4" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"></textarea>
+                    </div>
+                    <div class="text-center pt-4">
+                        <button type="submit" class="w-full md:w-auto px-12 py-4 bg-gray-900 text-white uppercase tracking-widest text-xs font-bold rounded-full hover:bg-orange-500 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 duration-200">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 py-12 bg-[#faf9f6]">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <span class="text-xl font-bold text-gray-900 serif-font">LUMINA.</span>
+                <p class="text-xs text-gray-500 mt-2">Capturing moments, one click at a time.</p>
+            </div>
+            
+            <div class="flex gap-8">
+                <a href="#" class="text-gray-400 hover:text-orange-500 transition-colors"><i data-lucide="instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-orange-500 transition-colors"><i data-lucide="twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-orange-500 transition-colors"><i data-lucide="mail"></i></a>
+            </div>
+            <p class="text-xs text-gray-400 uppercase tracking-widest">© 2024 Lumina Studio</p>
+        </div>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-white/95 backdrop-blur-xl hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-gray-800 hover:text-orange-500 z-50 transition-colors">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        
+        <div class="relative max-w-6xl max-h-[90vh] w-full flex flex-col items-center">
+            <img id="lightbox-img" src="" class="max-h-[80vh] max-w-full object-contain shadow-2xl rounded-lg" alt="Full size">
+            <div class="mt-6 text-center">
+                <h3 id="lightbox-title" class="text-2xl text-gray-900 serif-font mb-1"></h3>
+                <p id="lightbox-desc" class="text-xs text-gray-500 font-bold uppercase tracking-widest"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white px-6 py-4 rounded-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 shadow-2xl flex items-center gap-3">
+        <i data-lucide="check-circle" class="w-5 h-5 text-orange-400"></i>
+        <span class="text-sm font-bold uppercase tracking-wide">Message Sent</span>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Portfolio Data (Food, View, People)
+        const portfolioItems = [
+            {
+                id: 1,
+                category: 'food',
+                title: 'Sunday Brunch',
+                desc: 'Rustic Styling',
+                src: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 2,
+                category: 'view',
+                title: 'Alpine Lake',
+                desc: 'Travel Journal',
+                src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 3,
+                category: 'people',
+                title: 'Golden Hour Smile',
+                desc: 'Lifestyle Portrait',
+                src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 4,
+                category: 'food',
+                title: 'Berry Tart',
+                desc: 'Dessert Menu',
+                src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 5,
+                category: 'view',
+                title: 'Coastal Calm',
+                desc: 'Seascape',
+                src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 6,
+                category: 'people',
+                title: 'Urban Fashion',
+                desc: 'Street Style',
+                src: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 7,
+                category: 'food',
+                title: 'Fresh Coffee',
+                desc: 'Morning Vibes',
+                src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 8,
+                category: 'view',
+                title: 'Open Road',
+                desc: 'Adventure',
+                src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 9,
+                category: 'people',
+                title: 'Studio Light',
+                desc: 'Headshot',
+                src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+            {
+                id: 10,
+                category: 'food',
+                title: 'Citrus Splash',
+                desc: 'Product Shot',
+                src: 'https://images.unsplash.com/photo-1519996529931-28324d1a6390?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                largeSrc: 'https://images.unsplash.com/photo-1519996529931-28324d1a6390?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+            },
+        ];
+
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        // Render Gallery
+        function renderGallery(filter = 'all') {
+            galleryGrid.innerHTML = '';
+            
+            const filteredItems = filter === 'all' 
+                ? portfolioItems 
+                : portfolioItems.filter(item => item.category === filter);
+
+            filteredItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `group relative break-inside-avoid mb-6 rounded-lg overflow-hidden bg-gray-100 hover-lift fade-in`;
+                div.style.animationDelay = `${index * 100}ms`;
+                
+                div.innerHTML = `
+                    <div class="img-loading absolute inset-0 w-full h-full"></div>
+                    <img src="${item.src}" 
+                         onload="this.previousElementSibling.style.display='none'"
+                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
+                         alt="${item.title}">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <h3 class="translate-y-4 text-xl font-semibold text-white transition-transform duration-300 group-hover:translate-y-0 serif-font">${item.title}</h3>
+                        <p class="translate-y-4 text-xs uppercase tracking-widest text-orange-200 transition-transform delay-75 duration-300 group-hover:translate-y-0">${item.desc}</p>
+                        <button onclick="openLightbox(${item.id})" class="mt-4 translate-y-4 rounded-full bg-white p-3 text-gray-900 transition-all delay-150 duration-300 hover:bg-orange-500 hover:text-white group-hover:translate-y-0 shadow-lg">
+                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                galleryGrid.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        // Filter Functionality
+        function filterGallery(category) {
+            // Update buttons
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                const btnCategory = btn.getAttribute('onclick').split("'")[1];
+                if (btnCategory === category) {
+                    btn.classList.remove('bg-transparent', 'text-gray-500', 'border-gray-200');
+                    btn.classList.add('bg-gray-900', 'text-white', 'border-gray-900');
+                } else {
+                    btn.classList.add('bg-transparent', 'text-gray-500', 'border-gray-200');
+                    btn.classList.remove('bg-gray-900', 'text-white', 'border-gray-900');
+                }
+            });
+
+            renderGallery(category);
+        }
+
+        // Initial Render
+        renderGallery();
+
+        // Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDesc = document.getElementById('lightbox-desc');
+
+        function openLightbox(id) {
+            const item = portfolioItems.find(p => p.id === id);
+            if (!item) return;
+
+            lightboxImg.src = item.largeSrc;
+            lightboxTitle.innerText = item.title;
+            lightboxDesc.innerText = item.desc;
+            
+            lightbox.classList.remove('hidden');
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightboxImg.src = ''; 
+            }, 300);
+            document.body.style.overflow = 'auto';
+        }
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Contact Form
+        function handleContact(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            
+            btn.innerText = 'Sending...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.disabled = false;
+                e.target.reset();
+                
+                const toast = document.getElementById('toast');
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }, 1500);
+        }
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm', 'bg-white/95');
+                nav.classList.remove('bg-white/80');
+            } else {
+                nav.classList.remove('shadow-sm', 'bg-white/95');
+                nav.classList.add('bg-white/80');
+            }
+        });
+
+    </script>
+</body>
+</html>
