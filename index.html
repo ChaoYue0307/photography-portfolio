@@ -105,7 +105,7 @@
         <div class="absolute inset-0 grid grid-cols-1 md:grid-cols-2 w-full h-full">
             <div class="bg-[#f8f5f2] h-full w-full hidden md:block"></div>
             <div class="h-full w-full relative">
-                 <!-- Bright, appealing hero image -->
+                 <!-- Hero Image: You can replace this with 'images/hero.jpg' -->
                 <img src="https://images.unsplash.com/photo-1464550883968-1564ee8fe98e?q=80&w=2574&auto=format&fit=crop" 
                      class="w-full h-full object-cover opacity-90" alt="Bright Lifestyle">
                 <div class="absolute inset-0 bg-white/10"></div>
@@ -165,6 +165,7 @@
                     <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-100 rounded-full z-0"></div>
                     <div class="absolute -top-6 -right-6 w-24 h-24 border-2 border-gray-200 rounded-full z-0"></div>
                     
+                    <!-- Replace with images/about.jpg -->
                     <img src="https://images.unsplash.com/photo-1552699616-9679c615b46d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
                          alt="Photographer" class="relative z-10 w-full h-[500px] object-cover rounded-2xl shadow-xl">
                 </div>
@@ -276,126 +277,158 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Portfolio Data (Food, View, People)
-        const portfolioItems = [
-            {
-                id: 1,
-                category: 'food',
-                title: 'Sunday Brunch',
-                desc: 'Rustic Styling',
-                src: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
+        /* ================================================================
+           USER CONFIGURATION AREA - NEW SUBFOLDER SETUP
+        ================================================================
+           1. Create folder 'images'
+           2. Create subfolders: 'images/food', 'images/view', 'images/people'
+           3. Inside each, name files sequentially: '1.jpg', '2.jpg', '3.jpg'
+           
+           Example:
+           /images/food/1.jpg
+           /images/food/2.jpg
+        */
+
+        // Toggle this to FALSE if you want to see the demo Unsplash images instead
+        const USE_LOCAL_IMAGES = true; 
+
+        const galleryConfig = {
+            localPath: 'images', // Root folder
+            
+            // Define which categories to scan (must match folder names)
+            categories: ['food', 'view', 'people'],
+            
+            // Optional: Override titles for specific images
+            // Format: 'folder/filename': { title: "...", desc: "..." }
+            metadata: {
+                'food/1': { title: "Signature Dish", desc: "Chef's Table" },
+                'view/1': { title: "Mountain Peak", desc: "Hiking Adventure" }
             },
-            {
-                id: 2,
-                category: 'view',
-                title: 'Alpine Lake',
-                desc: 'Travel Journal',
-                src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 3,
-                category: 'people',
-                title: 'Golden Hour Smile',
-                desc: 'Lifestyle Portrait',
-                src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 4,
-                category: 'food',
-                title: 'Berry Tart',
-                desc: 'Dessert Menu',
-                src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 5,
-                category: 'view',
-                title: 'Coastal Calm',
-                desc: 'Seascape',
-                src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 6,
-                category: 'people',
-                title: 'Urban Fashion',
-                desc: 'Street Style',
-                src: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 7,
-                category: 'food',
-                title: 'Fresh Coffee',
-                desc: 'Morning Vibes',
-                src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 8,
-                category: 'view',
-                title: 'Open Road',
-                desc: 'Adventure',
-                src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 9,
-                category: 'people',
-                title: 'Studio Light',
-                desc: 'Headshot',
-                src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
-            {
-                id: 10,
-                category: 'food',
-                title: 'Citrus Splash',
-                desc: 'Product Shot',
-                src: 'https://images.unsplash.com/photo-1519996529931-28324d1a6390?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                largeSrc: 'https://images.unsplash.com/photo-1519996529931-28324d1a6390?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80'
-            },
+
+            // Defaults if no specific metadata is provided
+            defaults: {
+                food: { title: "Culinary Delight", desc: "Food Photography" },
+                view: { title: "Scenic View", desc: "Landscape Series" },
+                people: { title: "Portrait Session", desc: "Lifestyle" }
+            }
+        };
+
+        // ================================================================
+
+        // Global State
+        let portfolioItems = [];
+        let currentFilter = 'all';
+
+        // Demo Data (Fallback)
+        const demoItems = [
+            { id: 'demo-1', category: 'food', title: 'Sunday Brunch', desc: 'Rustic Styling', src: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=1600' },
+            { id: 'demo-2', category: 'view', title: 'Alpine Lake', desc: 'Travel Journal', src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600' },
+            { id: 'demo-3', category: 'people', title: 'Golden Hour', desc: 'Lifestyle Portrait', src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1600' },
+            { id: 'demo-4', category: 'food', title: 'Berry Tart', desc: 'Dessert Menu', src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1600' },
+            { id: 'demo-5', category: 'view', title: 'Coastal Calm', desc: 'Seascape', src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600' }
         ];
 
+        // DOM Elements
         const galleryGrid = document.getElementById('gallery-grid');
 
-        // Render Gallery
-        function renderGallery(filter = 'all') {
-            galleryGrid.innerHTML = '';
-            
-            const filteredItems = filter === 'all' 
-                ? portfolioItems 
-                : portfolioItems.filter(item => item.category === filter);
+        // 1. Initialize
+        function initGallery() {
+            galleryGrid.innerHTML = ''; // Clear grid
+            portfolioItems = []; // Clear items
 
-            filteredItems.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `group relative break-inside-avoid mb-6 rounded-lg overflow-hidden bg-gray-100 hover-lift fade-in`;
-                div.style.animationDelay = `${index * 100}ms`;
+            if (!USE_LOCAL_IMAGES) {
+                portfolioItems = demoItems;
+                renderAllItems();
+            } else {
+                // Start the probing process for each category
+                galleryConfig.categories.forEach(category => {
+                    probeImage(category, 1);
+                });
+            }
+        }
+
+        // 2. The "Probe" - Recursively checks for images inside Subfolders
+        function probeImage(category, index) {
+            const img = new Image();
+            
+            // UPDATED LOGIC: Look into Subfolders
+            // Path becomes: images/food/1.jpg
+            const src = `${galleryConfig.localPath}/${category}/${index}.jpg`;
+            const metaKey = `${category}/${index}`; // key for metadata lookup
+
+            img.onload = function() {
+                // Image exists! Add to data
+                const meta = galleryConfig.metadata[metaKey] || {};
+                const defaults = galleryConfig.defaults[category];
                 
-                div.innerHTML = `
-                    <div class="img-loading absolute inset-0 w-full h-full"></div>
-                    <img src="${item.src}" 
-                         onload="this.previousElementSibling.style.display='none'"
-                         class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
-                         alt="${item.title}">
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <h3 class="translate-y-4 text-xl font-semibold text-white transition-transform duration-300 group-hover:translate-y-0 serif-font">${item.title}</h3>
-                        <p class="translate-y-4 text-xs uppercase tracking-widest text-orange-200 transition-transform delay-75 duration-300 group-hover:translate-y-0">${item.desc}</p>
-                        <button onclick="openLightbox(${item.id})" class="mt-4 translate-y-4 rounded-full bg-white p-3 text-gray-900 transition-all delay-150 duration-300 hover:bg-orange-500 hover:text-white group-hover:translate-y-0 shadow-lg">
-                            <i data-lucide="maximize-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                `;
-                galleryGrid.appendChild(div);
-            });
+                const newItem = {
+                    id: `${category}-${index}`,
+                    category: category,
+                    title: meta.title || `${defaults.title} ${index}`,
+                    desc: meta.desc || defaults.desc,
+                    src: src,
+                    largeSrc: src
+                };
+
+                portfolioItems.push(newItem);
+                
+                // If the current filter allows this image, render it immediately
+                if (currentFilter === 'all' || currentFilter === category) {
+                    appendItemToGrid(newItem);
+                }
+
+                // Try to find the next one (recursion)
+                probeImage(category, index + 1);
+            };
+
+            img.onerror = function() {
+                // Image doesn't exist. Stop looking for this category.
+                console.log(`Finished scanning ${category}. Found ${index - 1} images.`);
+            };
+
+            img.src = src;
+        }
+
+        // 3. Render Logic
+        function renderAllItems() {
+            galleryGrid.innerHTML = '';
+            const filteredItems = currentFilter === 'all' 
+                ? portfolioItems 
+                : portfolioItems.filter(item => item.category === currentFilter);
+            
+            if (filteredItems.length === 0 && !USE_LOCAL_IMAGES) {
+                 galleryGrid.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-12">No images found. Check console for details.</div>`;
+            }
+            
+            filteredItems.forEach(item => appendItemToGrid(item));
+        }
+
+        function appendItemToGrid(item) {
+            const div = document.createElement('div');
+            div.className = `group relative break-inside-avoid mb-6 rounded-lg overflow-hidden bg-gray-100 hover-lift fade-in`;
+            
+            div.innerHTML = `
+                <div class="img-loading absolute inset-0 w-full h-full"></div>
+                <img src="${item.src}" 
+                     onload="this.previousElementSibling.style.display='none'"
+                     class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105" 
+                     alt="${item.title}">
+                <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <h3 class="translate-y-4 text-xl font-semibold text-white transition-transform duration-300 group-hover:translate-y-0 serif-font text-center px-4">${item.title}</h3>
+                    <p class="translate-y-4 text-xs uppercase tracking-widest text-orange-200 transition-transform delay-75 duration-300 group-hover:translate-y-0">${item.desc}</p>
+                    <button onclick="openLightbox('${item.id}')" class="mt-4 translate-y-4 rounded-full bg-white p-3 text-gray-900 transition-all delay-150 duration-300 hover:bg-orange-500 hover:text-white group-hover:translate-y-0 shadow-lg">
+                        <i data-lucide="maximize-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            galleryGrid.appendChild(div);
             lucide.createIcons();
         }
 
         // Filter Functionality
         function filterGallery(category) {
+            currentFilter = category;
+            
             // Update buttons
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => {
@@ -409,11 +442,9 @@
                 }
             });
 
-            renderGallery(category);
+            // Re-render the grid with the existing items we've found so far
+            renderAllItems();
         }
-
-        // Initial Render
-        renderGallery();
 
         // Lightbox Logic
         const lightbox = document.getElementById('lightbox');
@@ -422,7 +453,7 @@
         const lightboxDesc = document.getElementById('lightbox-desc');
 
         function openLightbox(id) {
-            const item = portfolioItems.find(p => p.id === id);
+            const item = portfolioItems.find(p => p.id == id); // Loose equality
             if (!item) return;
 
             lightboxImg.src = item.largeSrc;
@@ -494,6 +525,9 @@
                 nav.classList.add('bg-white/80');
             }
         });
+
+        // Start the engine
+        initGallery();
 
     </script>
 </body>
