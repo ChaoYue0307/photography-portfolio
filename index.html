@@ -101,18 +101,17 @@
 
     <!-- Hero Section -->
     <section id="home" class="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-[#f9f9f9]">
-        <!-- Split Background -->
         <div class="absolute inset-0 grid grid-cols-1 md:grid-cols-2 w-full h-full">
             <div class="bg-[#f8f5f2] h-full w-full hidden md:block"></div>
             <div class="h-full w-full relative">
-                 <!-- Hero Image: You can replace this with 'images/hero.jpg' -->
-                <img src="https://images.unsplash.com/photo-1464550883968-1564ee8fe98e?q=80&w=2574&auto=format&fit=crop" 
+                <!-- Try to load local hero, fallback to Unsplash if missing -->
+                <img src="images/hero.jpg" 
+                     onerror="this.src='https://images.unsplash.com/photo-1464550883968-1564ee8fe98e?q=80&w=2574&auto=format&fit=crop'"
                      class="w-full h-full object-cover opacity-90" alt="Bright Lifestyle">
                 <div class="absolute inset-0 bg-white/10"></div>
             </div>
         </div>
 
-        <!-- Content Overlay -->
         <div class="absolute inset-0 flex items-center justify-center md:justify-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-none">
             <div class="max-w-xl pointer-events-auto bg-white/60 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-8 rounded-2xl md:p-0 fade-in">
                 <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Photography Portfolio</span>
@@ -136,7 +135,7 @@
     </section>
 
     <!-- Portfolio Section -->
-    <section id="portfolio" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
+    <section id="portfolio" class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white min-h-[500px]">
         <div class="text-center max-w-2xl mx-auto mb-16">
             <h2 class="text-4xl md:text-5xl text-gray-900 mb-4 serif-font">Curated Collections</h2>
             <p class="text-gray-500">Explore recent shoots across food, landscapes, and portraits.</p>
@@ -152,7 +151,43 @@
 
         <!-- Gallery Grid -->
         <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6" id="gallery-grid">
-            <!-- Items will be injected via JS -->
+            <!-- Scanning animation (will be removed if items found) -->
+            <div class="col-span-3 text-center py-20" id="scanning-msg">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-orange-500 border-t-transparent mb-4"></div>
+                <p class="text-gray-500 font-medium">Scanning local folders for images...</p>
+            </div>
+        </div>
+        
+        <!-- Setup Error Message (Hidden by default) -->
+        <div id="setup-error" class="hidden max-w-3xl mx-auto bg-red-50 border border-red-100 rounded-xl p-8 text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-500 mb-4">
+                <i data-lucide="alert-circle" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">No Images Detected</h3>
+            <p class="text-gray-600 mb-6">The gallery scanner couldn't find your photos. This is usually due to a naming or folder issue.</p>
+            
+            <div class="text-left bg-white p-6 rounded-lg border border-gray-200 shadow-sm mb-6">
+                <h4 class="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider">Troubleshooting Guide:</h4>
+                <ul class="space-y-3 text-sm text-gray-600">
+                    <li class="flex gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                        <span><strong>Structure:</strong> Ensure you have a folder named <code>images</code> next to this HTML file.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                        <span><strong>Subfolders:</strong> Inside <code>images</code>, you must have subfolders named <code>food</code>, <code>view</code>, and <code>people</code>.</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500 flex-shrink-0"></i>
+                        <span><strong>Naming (IMPORTANT):</strong> Files MUST be named <code>1.jpg</code>, <code>2.jpg</code>, etc. <br> <span class="text-red-500">Naming a file <code>x.jpg</code> or <code>food.jpg</code> will fail.</span></span>
+                    </li>
+                    <li class="flex gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0"></i>
+                        <span><strong>Sequence:</strong> Don't skip numbers. If you have <code>1.jpg</code> and <code>3.jpg</code>, the scanner stops at 1.</span>
+                    </li>
+                </ul>
+            </div>
+            <button onclick="location.reload()" class="px-6 py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition-colors">Try Again</button>
         </div>
     </section>
 
@@ -161,12 +196,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div class="relative order-2 lg:order-1">
-                    <!-- Decorative square -->
                     <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-100 rounded-full z-0"></div>
                     <div class="absolute -top-6 -right-6 w-24 h-24 border-2 border-gray-200 rounded-full z-0"></div>
-                    
-                    <!-- Replace with images/about.jpg -->
-                    <img src="https://images.unsplash.com/photo-1552699616-9679c615b46d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                    <img src="images/about.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1552699616-9679c615b46d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'" 
                          alt="Photographer" class="relative z-10 w-full h-[500px] object-cover rounded-2xl shadow-xl">
                 </div>
                 <div class="order-1 lg:order-2">
@@ -175,10 +208,6 @@
                     <p class="text-gray-600 text-lg leading-relaxed mb-6">
                         Hi, I'm the eye behind the lens. My journey started with a simple love for morning light hitting a cup of coffee. Since then, it's evolved into a passion for capturing the essence of what makes life enjoyable.
                     </p>
-                    <p class="text-gray-600 text-lg leading-relaxed mb-8">
-                        Whether I'm styling a rustic dinner scene, hiking to a summit for that perfect view, or working with people to bring out their genuine smiles, I aim for a style that is bright, authentic, and timeless.
-                    </p>
-                    
                     <div class="flex gap-8 pt-4">
                         <div>
                             <h4 class="text-3xl font-bold text-gray-900 serif-font">50+</h4>
@@ -211,15 +240,6 @@
                             <label class="text-xs font-bold uppercase tracking-widest text-gray-500">Email</label>
                             <input type="email" required class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
                         </div>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold uppercase tracking-widest text-gray-500">What are we shooting?</label>
-                        <select class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors">
-                            <option>Food Photography</option>
-                            <option>Portrait / Personal Branding</option>
-                            <option>Landscape / Location</option>
-                            <option>Other</option>
-                        </select>
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold uppercase tracking-widest text-gray-500">Message</label>
@@ -257,7 +277,6 @@
         <button onclick="closeLightbox()" class="absolute top-6 right-6 text-gray-800 hover:text-orange-500 z-50 transition-colors">
             <i data-lucide="x" class="w-10 h-10"></i>
         </button>
-        
         <div class="relative max-w-6xl max-h-[90vh] w-full flex flex-col items-center">
             <img id="lightbox-img" src="" class="max-h-[80vh] max-w-full object-contain shadow-2xl rounded-lg" alt="Full size">
             <div class="mt-6 text-center">
@@ -278,34 +297,19 @@
         lucide.createIcons();
 
         /* ================================================================
-           USER CONFIGURATION AREA - NEW SUBFOLDER SETUP
-        ================================================================
-           1. Create folder 'images'
-           2. Create subfolders: 'images/food', 'images/view', 'images/people'
-           3. Inside each, name files sequentially: '1.jpg', '2.jpg', '3.jpg'
-           
-           Example:
-           /images/food/1.jpg
-           /images/food/2.jpg
-        */
-
-        // Toggle this to FALSE if you want to see the demo Unsplash images instead
-        const USE_LOCAL_IMAGES = true; 
+           CONFIGURATION & LOGIC
+        ================================================================ */
 
         const galleryConfig = {
-            localPath: 'images', // Root folder
+            localPath: 'images', 
+            categories: ['food', 'view', 'people'], // Folders to scan
             
-            // Define which categories to scan (must match folder names)
-            categories: ['food', 'view', 'people'],
-            
-            // Optional: Override titles for specific images
-            // Format: 'folder/filename': { title: "...", desc: "..." }
+            // Optional: Custom titles/descriptions
+            // Key format: 'folder/number' -> 'food/1'
             metadata: {
                 'food/1': { title: "Signature Dish", desc: "Chef's Table" },
                 'view/1': { title: "Mountain Peak", desc: "Hiking Adventure" }
             },
-
-            // Defaults if no specific metadata is provided
             defaults: {
                 food: { title: "Culinary Delight", desc: "Food Photography" },
                 view: { title: "Scenic View", desc: "Landscape Series" },
@@ -313,51 +317,38 @@
             }
         };
 
-        // ================================================================
-
-        // Global State
+        // State
         let portfolioItems = [];
         let currentFilter = 'all';
-
-        // Demo Data (Fallback)
-        const demoItems = [
-            { id: 'demo-1', category: 'food', title: 'Sunday Brunch', desc: 'Rustic Styling', src: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=1600' },
-            { id: 'demo-2', category: 'view', title: 'Alpine Lake', desc: 'Travel Journal', src: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600' },
-            { id: 'demo-3', category: 'people', title: 'Golden Hour', desc: 'Lifestyle Portrait', src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1600' },
-            { id: 'demo-4', category: 'food', title: 'Berry Tart', desc: 'Dessert Menu', src: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1600' },
-            { id: 'demo-5', category: 'view', title: 'Coastal Calm', desc: 'Seascape', src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', largeSrc: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600' }
-        ];
+        let categoriesScanning = 0;
+        let totalFound = 0;
 
         // DOM Elements
         const galleryGrid = document.getElementById('gallery-grid');
+        const scanningMsg = document.getElementById('scanning-msg');
+        const setupError = document.getElementById('setup-error');
 
-        // 1. Initialize
         function initGallery() {
-            galleryGrid.innerHTML = ''; // Clear grid
-            portfolioItems = []; // Clear items
-
-            if (!USE_LOCAL_IMAGES) {
-                portfolioItems = demoItems;
-                renderAllItems();
-            } else {
-                // Start the probing process for each category
-                galleryConfig.categories.forEach(category => {
-                    probeImage(category, 1);
-                });
-            }
+            // Start scanning all categories
+            galleryConfig.categories.forEach(category => {
+                categoriesScanning++;
+                probeImage(category, 1);
+            });
         }
 
-        // 2. The "Probe" - Recursively checks for images inside Subfolders
+        // The Probe: Recursively checks for 1.jpg, 2.jpg, etc.
         function probeImage(category, index) {
             const img = new Image();
-            
-            // UPDATED LOGIC: Look into Subfolders
-            // Path becomes: images/food/1.jpg
             const src = `${galleryConfig.localPath}/${category}/${index}.jpg`;
-            const metaKey = `${category}/${index}`; // key for metadata lookup
+            const metaKey = `${category}/${index}`;
 
             img.onload = function() {
-                // Image exists! Add to data
+                // SUCCESS: Image found
+                totalFound++;
+                
+                // Hide scanning message if it's still there
+                if (scanningMsg) scanningMsg.style.display = 'none';
+
                 const meta = galleryConfig.metadata[metaKey] || {};
                 const defaults = galleryConfig.defaults[category];
                 
@@ -372,35 +363,27 @@
 
                 portfolioItems.push(newItem);
                 
-                // If the current filter allows this image, render it immediately
+                // Render immediately if filter matches
                 if (currentFilter === 'all' || currentFilter === category) {
                     appendItemToGrid(newItem);
                 }
 
-                // Try to find the next one (recursion)
+                // Continue looking for next number
                 probeImage(category, index + 1);
             };
 
             img.onerror = function() {
-                // Image doesn't exist. Stop looking for this category.
-                console.log(`Finished scanning ${category}. Found ${index - 1} images.`);
+                // FAILURE: Image not found (End of this category)
+                categoriesScanning--;
+                
+                // If all categories are done and we found nothing...
+                if (categoriesScanning === 0 && totalFound === 0) {
+                    if (scanningMsg) scanningMsg.style.display = 'none';
+                    setupError.classList.remove('hidden'); // Show error UI
+                }
             };
 
             img.src = src;
-        }
-
-        // 3. Render Logic
-        function renderAllItems() {
-            galleryGrid.innerHTML = '';
-            const filteredItems = currentFilter === 'all' 
-                ? portfolioItems 
-                : portfolioItems.filter(item => item.category === currentFilter);
-            
-            if (filteredItems.length === 0 && !USE_LOCAL_IMAGES) {
-                 galleryGrid.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-12">No images found. Check console for details.</div>`;
-            }
-            
-            filteredItems.forEach(item => appendItemToGrid(item));
         }
 
         function appendItemToGrid(item) {
@@ -425,11 +408,10 @@
             lucide.createIcons();
         }
 
-        // Filter Functionality
         function filterGallery(category) {
             currentFilter = category;
             
-            // Update buttons
+            // Update UI buttons
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(btn => {
                 const btnCategory = btn.getAttribute('onclick').split("'")[1];
@@ -442,29 +424,34 @@
                 }
             });
 
-            // Re-render the grid with the existing items we've found so far
-            renderAllItems();
+            // Re-render grid
+            galleryGrid.innerHTML = '';
+            const filteredItems = currentFilter === 'all' 
+                ? portfolioItems 
+                : portfolioItems.filter(item => item.category === currentFilter);
+            
+            filteredItems.forEach(item => appendItemToGrid(item));
+            
+            // If filter yields no results (but we have global items)
+            if (filteredItems.length === 0 && totalFound > 0) {
+                galleryGrid.innerHTML = `<div class="col-span-3 text-center text-gray-400 py-12">No images found in this category yet.</div>`;
+            }
         }
 
-        // Lightbox Logic
+        // Lightbox & Contact (Standard)
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxTitle = document.getElementById('lightbox-title');
         const lightboxDesc = document.getElementById('lightbox-desc');
 
         function openLightbox(id) {
-            const item = portfolioItems.find(p => p.id == id); // Loose equality
+            const item = portfolioItems.find(p => p.id == id);
             if (!item) return;
-
             lightboxImg.src = item.largeSrc;
             lightboxTitle.innerText = item.title;
             lightboxDesc.innerText = item.desc;
-            
             lightbox.classList.remove('hidden');
-            setTimeout(() => {
-                lightbox.classList.remove('opacity-0');
-            }, 10);
-            
+            setTimeout(() => lightbox.classList.remove('opacity-0'), 10);
             document.body.style.overflow = 'hidden'; 
         }
 
@@ -477,56 +464,30 @@
             document.body.style.overflow = 'auto';
         }
 
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) closeLightbox();
-        });
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeLightbox();
-        });
-
-        // Mobile Menu
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // Contact Form
         function handleContact(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             const originalText = btn.innerText;
-            
             btn.innerText = 'Sending...';
             btn.disabled = true;
-            
             setTimeout(() => {
                 btn.innerText = originalText;
                 btn.disabled = false;
                 e.target.reset();
-                
                 const toast = document.getElementById('toast');
                 toast.classList.remove('translate-y-20', 'opacity-0');
-                
-                setTimeout(() => {
-                    toast.classList.add('translate-y-20', 'opacity-0');
-                }, 3000);
+                setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3000);
             }, 1500);
         }
 
-        // Navbar Scroll
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-sm', 'bg-white/95');
-                nav.classList.remove('bg-white/80');
-            } else {
-                nav.classList.remove('shadow-sm', 'bg-white/95');
-                nav.classList.add('bg-white/80');
-            }
-        });
-
-        // Start the engine
+        // Run
         initGallery();
 
     </script>
