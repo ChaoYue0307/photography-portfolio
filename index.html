@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chaoyue's Studio | Visual Stories</title>
+    <title>Chaoyue's Photo Studio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,7 +66,8 @@
     <nav class="fixed w-full z-40 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-24">
-                <a href="#" class="text-2xl font-semibold tracking-wide text-gray-900 serif-font">CHAOYUE.</a>
+                <!-- Updated Brand Name -->
+                <a href="#" class="text-xl font-semibold tracking-wide text-gray-900 serif-font">Chaoyue's Photo Studio</a>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
@@ -109,7 +110,8 @@
 
         <div class="absolute inset-0 flex items-center justify-center md:justify-start max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-none">
             <div class="max-w-xl pointer-events-auto bg-white/60 md:bg-transparent backdrop-blur-sm md:backdrop-blur-none p-8 rounded-2xl md:p-0 fade-in">
-                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Chaoyue's Photo Studio</span>
+                <!-- Removed redundant Name badge, replaced with generic Portfolio tag -->
+                <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-orange-800 text-xs font-bold uppercase tracking-wider mb-6">Photography Portfolio</span>
                 <h1 class="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight serif-font">
                     Life in <br/>
                     <span class="italic font-light text-orange-500">Vibrant Color</span>
@@ -144,7 +146,7 @@
             <button onclick="filterGallery('people')" class="filter-btn text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-full border border-gray-200 text-gray-500 hover:border-orange-500 hover:text-orange-500 transition-all hover:shadow-md">People</button>
         </div>
 
-        <!-- Gallery Grid - CHANGED: Used Grid instead of Columns for uniform sizes -->
+        <!-- Gallery Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
             <!-- Scanning animation -->
             <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20" id="scanning-msg">
@@ -153,7 +155,7 @@
             </div>
         </div>
         
-        <!-- Setup Error Message (Hidden by default) -->
+        <!-- Setup Error Message -->
         <div id="setup-error" class="hidden max-w-3xl mx-auto bg-red-50 border border-red-100 rounded-xl p-8 text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-500 mb-4">
                 <i data-lucide="alert-circle" class="w-8 h-8"></i>
@@ -254,7 +256,8 @@
     <footer class="border-t border-gray-100 py-12 bg-[#faf9f6]">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <span class="text-xl font-bold text-gray-900 serif-font">CHAOYUE.</span>
+                <!-- Unified Footer Logo -->
+                <span class="text-xl font-bold text-gray-900 serif-font">Chaoyue's Photo Studio</span>
                 <p class="text-xs text-gray-500 mt-2">Capturing moments, one click at a time.</p>
             </div>
             
@@ -298,12 +301,9 @@
         const galleryConfig = {
             localPath: 'images', 
             categories: ['food', 'view', 'people'], // Folders to scan
-            
-            // How many images to try loading simultaneously per category?
-            // Higher = faster load, but higher risk of console 404 errors.
-            batchSize: 10,
+            batchSize: 10, // Load 10 at a time per category
 
-            // Optional: Custom metadata
+            // Custom metadata
             metadata: {
                 'food/1': { title: "Signature Dish", desc: "Chef's Table" },
                 'view/1': { title: "Mountain Peak", desc: "Hiking Adventure" }
@@ -329,7 +329,6 @@
         function initGallery() {
             // Start scanning all categories in parallel batches
             galleryConfig.categories.forEach(category => {
-                // We start by checking batch 1 (images 1 to 10)
                 loadBatch(category, 1);
             });
         }
@@ -368,19 +367,13 @@
 
                     portfolioItems.push(newItem);
                     
-                    // Sort items so 1, 2, 3 appear in order even if 3 loads before 1
+                    // Sort items so 1, 2, 3 appear in order
                     portfolioItems.sort((a, b) => {
-                         // simple sort by category then index
                          if(a.category === b.category) return a.sortIndex - b.sortIndex;
                          return a.category.localeCompare(b.category);
                     });
 
-                    // Re-render grid completely to maintain order
                     renderGallery();
-                    
-                    // If this was the last item in the batch, and it succeeded,
-                    // we might want to trigger the NEXT batch?
-                    // Actually, simpler: wait for all in batch to finish/fail.
                     checkBatchCompletion();
                 };
 
@@ -394,19 +387,12 @@
             }
 
             function checkBatchCompletion() {
-                // If we have processed all images in this batch
                 if (completedInBatch === galleryConfig.batchSize) {
-                    // If we found ANY images in this batch (e.g. found 1,2,3 but failed 4-10)
-                    // and specifically if we found the LAST one, we should probably check the next batch.
-                    // BUT, strictly, if 1-10 exists, we load 11-20.
-                    // If only 1-3 exist, successInBatch will be > 0 but < 10.
-                    // We stop if successInBatch == 0 (found nothing in this range).
-                    
                     if (successInBatch > 0) {
-                        // Found some! Let's aggressively try the next batch
+                        // Found some! Try next batch
                         loadBatch(category, endIdx + 1);
                     } else {
-                        // Found nothing in this batch. Stop scanning this category.
+                        // Found nothing. Stop scanning this category.
                         scannedCategories++;
                         checkAllDone();
                     }
@@ -415,7 +401,6 @@
         }
         
         function checkAllDone() {
-            // If we checked all categories and found zero images total
             if (scannedCategories === galleryConfig.categories.length && totalFound === 0) {
                 if (scanningMsg) scanningMsg.style.display = 'none';
                 setupError.classList.remove('hidden');
@@ -423,7 +408,6 @@
         }
 
         function renderGallery() {
-            // Helper to render the current state of portfolioItems
             galleryGrid.innerHTML = '';
             
             const filteredItems = currentFilter === 'all' 
@@ -431,15 +415,10 @@
                 : portfolioItems.filter(item => item.category === currentFilter);
             
             filteredItems.forEach(item => appendItemToGrid(item));
-
-            if (filteredItems.length === 0 && totalFound > 0) {
-                 // Keep the grid empty but maybe show a message if desired
-            }
         }
 
         function appendItemToGrid(item) {
             const div = document.createElement('div');
-            // CHANGED: Added 'aspect-square' for uniform size
             div.className = `group relative aspect-square overflow-hidden bg-gray-100 hover-lift fade-in`;
             
             div.innerHTML = `
@@ -532,4 +511,4 @@
 
     </script>
 </body>
-</html> 
+</html>
